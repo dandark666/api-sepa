@@ -115,6 +115,22 @@
         </div>
 
         <!-- Paso 1: Cargar Modelos -->
+        <div class="section">
+            <h2><span class="step-number">1</span>Cargar Modelos Pre-Entrenados</h2>
+            <p>El sistema usa modelos de machine learning pre-entrenados para el análisis</p>
+            <button onclick="cargarDataset()" class="btn btn-primary btn-step">
+                <i class="fas fa-robot me-2"></i>Cargar Modelos
+            </button>
+            <button onclick="limpiarCache()" class="btn btn-outline-warning btn-step">
+                <i class="fas fa-broom me-2"></i>Recargar Modelos
+            </button>
+            <div class="performance-info">
+                <i class="fas fa-info-circle me-1"></i>
+                Modo producción: Usando modelos pre-entrenados (no se requiere dataset)
+            </div>
+            <div id="cargarResult" class="mt-3"></div>
+        </div>
+
         <!-- Paso 2: Información del Modelo -->
         <div class="section" id="visualizacionSection" style="display: none;">
             <h2><span class="step-number">2</span>Información del Modelo</h2>
