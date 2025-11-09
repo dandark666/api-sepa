@@ -5,16 +5,13 @@ from rest_framework.response import Response
 import os
 from .data_analyzer import AnalizadorDataset
 
-# Configuración - RUTA DEJADA IGUAL
 DATASETS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'datasets')
-DATASET_NAME = "TotalFeatures-ISCXFlowMeter.csv"  # ⬅️ CAMBIA ESTO por el nombre real de tu archivo
+DATASET_NAME = "diabetes.csv"
 
-# Crear una instancia GLOBAL para reutilizar
 analizador_global = AnalizadorDataset(DATASETS_PATH, DATASET_NAME)
 
 @api_view(['GET'])
 def cargar_dataset(request):
-    """Cargar dataset automáticamente"""
     try:
         resultado = analizador_global.cargar_dataset()
         
@@ -38,7 +35,6 @@ def cargar_dataset(request):
 
 @api_view(['GET'])
 def visualizar_dataset(request):
-    """Visualizar el dataset"""
     try:
         resultado = analizador_global.visualizar_dataset()
         
@@ -58,7 +54,6 @@ def visualizar_dataset(request):
 
 @api_view(['GET'])
 def importancia_caracteristicas(request):
-    """Calcular importancia de características"""
     try:
         resultado = analizador_global.importancia_caracteristicas()
         
@@ -78,7 +73,6 @@ def importancia_caracteristicas(request):
 
 @api_view(['GET'])
 def reducir_caracteristicas(request):
-    """Reducir número de características"""
     try:
         resultado = analizador_global.reducir_caracteristicas()
         
@@ -98,7 +92,6 @@ def reducir_caracteristicas(request):
 
 @api_view(['GET'])
 def calcular_f1_score(request):
-    """Calcular F1 Score"""
     try:
         resultado = analizador_global.calcular_f1_score()
         
@@ -118,7 +111,6 @@ def calcular_f1_score(request):
 
 @api_view(['POST'])
 def limpiar_cache(request):
-    """Limpiar cache y modelos guardados"""
     try:
         success = analizador_global.limpiar_cache()
         if success:
@@ -138,5 +130,4 @@ def limpiar_cache(request):
         }, status=500)
 
 def frontend_view(request):
-    """Vista principal del frontend"""
     return render(request, 'index.html')
