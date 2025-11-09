@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: analisis-datos-django
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn analisis_auto.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: WEB_CONCURRENCY
+        value: 4
