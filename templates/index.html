@@ -110,24 +110,9 @@
             </div>
         </div>
 
-         <!-- Paso 1: Cargar Modelos -->
-        <div class="section">
-            <h2><span class="step-number">1</span>Cargar Dataset</h2>
-            <button onclick="cargarDataset()" class="btn btn-primary btn-step">
-                <i class="fas fa-robot me-2"></i>Cargar Dataset
-            </button>
-            <button onclick="limpiarCache()" class="btn btn-outline-warning btn-step">
-                <i class="fas fa-broom me-2"></i>Recargar Dataset
-            </button>
-            <div class="performance-info">
-                <i class="fas fa-info-circle me-1"></i>
-            </div>
-            <div id="cargarResult" class="mt-3"></div>
-        </div>
-
-         <!-- Paso 2: Información del Modelo -->
-        <div class="section" id="visualizacionSection" style="display: none;">
-            <h2><span class="step-number">2</span>Información del Modelo</h2>
+        <!-- Sección 1: Información del Modelo (ahora es la primera sección) -->
+        <div class="section" id="visualizacionSection">
+            <h2><span class="step-number">1</span>Información del Modelo</h2>
             <button onclick="visualizarDataset()" class="btn btn-info btn-step">
                 <i class="fas fa-eye me-2"></i>Mostrar Información del Modelo
             </button>
@@ -140,9 +125,9 @@
             <div id="datasetInfo" class="mt-3"></div>
         </div>
 
-        <!-- Paso 3: Importancia -->
-        <div class="section" id="importanciaSection" style="display: none;">
-            <h2><span class="step-number">3</span>Importancia de Características (Modelo)</h2>
+        <!-- Sección 2: Importancia -->
+        <div class="section" id="importanciaSection">
+            <h2><span class="step-number">2</span>Importancia de Características (Modelo)</h2>
             <button onclick="calcularImportancia()" class="btn btn-warning btn-step">
                 <i class="fas fa-chart-bar me-2"></i>Calcular Importancia
             </button>
@@ -156,9 +141,9 @@
             <div id="importanciaChart" class="chart-container"></div>
         </div>
 
-        <!-- Paso 4: Reducción -->
-        <div class="section" id="reduccionSection" style="display: none;">
-            <h2><span class="step-number">4</span>Reducción de Características (Modelo)</h2>
+        <!-- Sección 3: Reducción -->
+        <div class="section" id="reduccionSection">
+            <h2><span class="step-number">3</span>Reducción de Características (Modelo)</h2>
             <button onclick="reducirCaracteristicas()" class="btn btn-success btn-step">
                 <i class="fas fa-compress me-2"></i>Reducir Características
             </button>
@@ -171,9 +156,9 @@
             <div id="reduccionInfo" class="mt-3"></div>
         </div>
 
-        <!-- Paso 5: F1 Score -->
-        <div class="section" id="f1Section" style="display: none;">
-            <h2><span class="step-number">5</span>Métricas del Modelo</h2>
+        <!-- Sección 4: F1 Score -->
+        <div class="section" id="f1Section">
+            <h2><span class="step-number">4</span>Métricas del Modelo</h2>
             <button onclick="calcularF1Score()" class="btn btn-danger btn-step">
                 <i class="fas fa-calculator me-2"></i>Calcular F1 Score y Métricas
             </button>
@@ -191,53 +176,22 @@
         // Mostrar nombre del dataset
         document.getElementById('datasetName').textContent = 'Producción (Modelos Pre-Entrenados)';
 
-        // Función para cargar modelos
+        // Función para cargar modelos automáticamente
         async function cargarDataset() {
-            const resultDiv = document.getElementById('cargarResult');
-            resultDiv.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin me-2"></i>Cargando modelos pre-entrenados...</div>';
-
             try {
                 const response = await fetch('/api/cargar-dataset/');
                 const data = await response.json();
 
                 if (data.success) {
-                    resultDiv.innerHTML = `
-                        <div class="alert alert-success">
-                            <h4><i class="fas fa-check-circle me-2"></i>Modelos cargados exitosamente</h4>
-                            <p><strong>Tipo:</strong> Modelos pre-entrenados</p>
-                            <p><strong>Características:</strong> ${data.datos.columns.length} variables</p>
-                            <p><strong>Estado:</strong> <span class="text-success"><i class="fas fa-bolt me-1"></i>Listo para análisis</span></p>
-                            <div class="mt-2">
-                                <small class="text-muted">
-                                    <i class="fas fa-lightbulb me-1"></i>
-                                    Los modelos incluyen: Importancia de características, Reducción dimensional y Métricas de evaluación
-                                </small>
-                            </div>
-                        </div>
-                    `;
-
-                    // Mostrar todas las secciones
-                    document.getElementById('visualizacionSection').style.display = 'block';
-                    document.getElementById('importanciaSection').style.display = 'block';
-                    document.getElementById('reduccionSection').style.display = 'block';
-                    document.getElementById('f1Section').style.display = 'block';
-
+                    console.log('Modelos cargados exitosamente');
+                    // Las secciones ya están visibles por defecto
                 } else {
-                    resultDiv.innerHTML = `
-                        <div class="alert alert-danger">
-                            <h4><i class="fas fa-exclamation-triangle me-2"></i>Error al cargar modelos</h4>
-                            <p>${data.error}</p>
-                            <p><small>Los modelos pre-entrenados son necesarios para el funcionamiento en producción</small></p>
-                        </div>
-                    `;
+                    console.error('Error al cargar modelos:', data.error);
+                    alert('Error al cargar modelos: ' + data.error);
                 }
             } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="alert alert-danger">
-                        <h4><i class="fas fa-exclamation-triangle me-2"></i>Error de conexión</h4>
-                        <p>${error}</p>
-                    </div>
-                `;
+                console.error('Error de conexión:', error);
+                alert('Error de conexión: ' + error);
             }
         }
 
@@ -613,8 +567,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
