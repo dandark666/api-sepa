@@ -110,9 +110,7 @@
             </div>
         </div>
 
-
-
-        <!-- Sección 2: Importancia -->
+        <!-- Sección 1: Importancia -->
         <div class="section" id="importanciaSection">
             <h2><span class="step-number">1</span>Importancia de Características (Dataset)</h2>
             <button onclick="calcularImportancia()" class="btn btn-warning btn-step">
@@ -128,7 +126,7 @@
             <div id="importanciaChart" class="chart-container"></div>
         </div>
 
-        <!-- Sección 3: Reducción -->
+        <!-- Sección 2: Reducción -->
         <div class="section" id="reduccionSection">
             <h2><span class="step-number">2</span>Reducción de Características (Dataset)</h2>
             <button onclick="reducirCaracteristicas()" class="btn btn-success btn-step">
@@ -143,11 +141,11 @@
             <div id="reduccionInfo" class="mt-3"></div>
         </div>
 
-        <!-- Sección 4: F1 Score -->
+        <!-- Sección 3: F1 Score -->
         <div class="section" id="f1Section">
             <h2><span class="step-number">3</span>Métricas del Modelo</h2>
             <button onclick="calcularF1Score()" class="btn btn-danger btn-step">
-                <i class="fas fa-calculator me-2"></i>Calcular F1 Score 
+                <i class="fas fa-calculator me-2"></i>Calcular F1 Score y Métricas
             </button>
             <div id="f1Loading" class="loading">
                 <div class="spinner-border text-danger" role="status">
@@ -161,20 +159,20 @@
 
     <script>
         // Mostrar nombre del dataset
-        document.getElementById('datasetName').textContent = 'Producción (Modelos Pre-Entrenados)';
+        document.getElementById('datasetName').textContent = 'Producción (Dataset Pre-Entrenado)';
 
-        // Función para cargar modelos automáticamente
+        // Función para cargar dataset automáticamente
         async function cargarDataset() {
             try {
                 const response = await fetch('/api/cargar-dataset/');
                 const data = await response.json();
 
                 if (data.success) {
-                    console.log('Modelos cargados exitosamente');
+                    console.log('Dataset cargado exitosamente');
                     // Las secciones ya están visibles por defecto
                 } else {
-                    console.error('Error al cargar modelos:', data.error);
-                    alert('Error al cargar modelos: ' + data.error);
+                    console.error('Error al cargar dataset:', data.error);
+                    alert('Error al cargar dataset: ' + data.error);
                 }
             } catch (error) {
                 console.error('Error de conexión:', error);
@@ -184,7 +182,7 @@
 
         // Función para limpiar cache
         async function limpiarCache() {
-            if (!confirm('¿Estás seguro de que quieres recargar los modelos? Esto forzará a cargar nuevamente todos los modelos.')) {
+            if (!confirm('¿Estás seguro de que quieres recargar el dataset? Esto forzará a cargar nuevamente todos los datos.')) {
                 return;
             }
 
@@ -195,170 +193,13 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    alert('✅ Modelos recargados. Vuelve a cargar los modelos.');
+                    alert('✅ Dataset recargado. Vuelve a cargar los datos.');
                     // Recargar la página para empezar fresco
                     location.reload();
                 } else {
-                    alert('Error al recargar modelos: ' + data.error);
+                    alert('Error al recargar dataset: ' + data.error);
                 }
             } catch (error) {
-                alert('Error: ' + error);
-            }
-        }
-
-        // Función para visualizar dataset
-        async function visualizarDataset() {
-            showLoading('visualizacionLoading');
-            
-            try {
-                const response = await fetch('/api/visualizar-dataset/');
-                const data = await response.json();
-
-                hideLoading('visualizacionLoading');
-
-                if (data.success) {
-                    let infoHTML = '';
-
-                    // Verificar si estamos en modo modelos pre-entrenados
-                    if (data.info.filas === "Modelos pre-entrenados") {
-                        infoHTML = `
-                            <div class="info-box">
-                                <h4><i class="fas fa-robot me-2"></i>Información de Modelos Pre-Entrenados</h4>
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Modo Producción:</strong> Usando modelos de machine learning pre-entrenados
-                                </div>
-                                <p><strong>Características disponibles:</strong> ${data.info.columnas}</p>
-                                <p><strong>Variables analizables:</strong> ${data.info.nombres_columnas.join(', ')}</p>
-                            </div>
-                        `;
-
-                        // Mostrar información del modelo
-                        infoHTML += `
-                            <div class="info-box">
-                                <h4><i class="fas fa-cogs me-2"></i>Detalles del Modelo</h4>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>Algoritmo:</strong> Random Forest</p>
-                                        <p><strong>Árboles:</strong> 100 (Importancia) / 50 (Métricas)</p>
-                                        <p><strong>Características:</strong> Top 10 más importantes</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Métricas incluidas:</strong> F1 Score, Accuracy</p>
-                                        <p><strong>Uso:</strong> Análisis predictivo</p>
-                                        <p><strong>Estado:</strong> <span class="badge bg-success">Pre-entrenado</span></p>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                        // Mostrar características disponibles
-                        if (data.info.nombres_columnas && data.info.nombres_columnas.length > 0) {
-                            infoHTML += `
-                                <div class="info-box">
-                                    <h4><i class="fas fa-list me-2"></i>Características Disponibles</h4>
-                                    <div class="row">
-                                        ${data.info.nombres_columnas.map((feature, index) => `
-                                            <div class="col-md-4 mb-2">
-                                                <div class="card">
-                                                    <div class="card-body py-2">
-                                                        <small><i class="fas fa-chart-line me-1 text-primary"></i>${feature}</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    } else {
-                        // Modo desarrollo con dataset real
-                        infoHTML = `
-                            <div class="info-box">
-                                <h4><i class="fas fa-info-circle me-2"></i>Información del Dataset</h4>
-                                <p><strong>Filas:</strong> ${data.info.filas}</p>
-                                <p><strong>Columnas:</strong> ${data.info.columnas}</p>
-                                <p><strong>Variables:</strong> ${data.info.nombres_columnas.join(', ')}</p>
-                            </div>
-                        `;
-
-                        // Mostrar df.head(10) solo en desarrollo
-                        if (data.info.primeras_10_filas && data.info.primeras_10_filas.length > 0) {
-                            infoHTML += `
-                                <div class="info-box">
-                                    <h4><i class="fas fa-table me-2"></i>Primeras 10 Filas</h4>
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered">
-                                            <thead class="table-dark">
-                                                <tr>
-                            `;
-                            
-                            const firstRow = data.info.primeras_10_filas[0];
-                            Object.keys(firstRow).forEach(col => {
-                                infoHTML += `<th>${col}</th>`;
-                            });
-                            
-                            infoHTML += `</tr></thead><tbody>`;
-                            
-                            data.info.primeras_10_filas.forEach((fila) => {
-                                infoHTML += `<tr>`;
-                                Object.values(fila).forEach(valor => {
-                                    infoHTML += `<td>${valor}</td>`;
-                                });
-                                infoHTML += `</tr>`;
-                            });
-                            
-                            infoHTML += `</tbody></table></div></div>`;
-                        }
-
-                        // Mostrar df.info() y df.describe() en desarrollo
-                        if (data.info_string) {
-                            infoHTML += `
-                                <div class="info-box">
-                                    <h4><i class="fas fa-info me-2"></i>Información Técnica</h4>
-                                    <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; border: 1px solid #ddd; font-size: 14px; line-height: 1.4;">${data.info_string}</pre>
-                                </div>
-                            `;
-                        }
-
-                        if (Object.keys(data.describe).length > 0) {
-                            infoHTML += `
-                                <div class="info-box">
-                                    <h4><i class="fas fa-chart-bar me-2"></i>Estadísticas Descriptivas</h4>
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered">
-                                            <thead class="table-dark">
-                                                <tr>
-                                                    <th>Estadística</th>
-                            `;
-                            
-                            const stats = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'];
-                            const columnas = Object.keys(data.describe);
-                            columnas.forEach(col => {
-                                infoHTML += `<th>${col}</th>`;
-                            });
-                            
-                            infoHTML += `</tr></thead><tbody>`;
-                            
-                            stats.forEach(stat => {
-                                infoHTML += `<tr><td><strong>${stat}</strong></td>`;
-                                columnas.forEach(col => {
-                                    const valor = data.describe[col][stat];
-                                    infoHTML += `<td>${typeof valor === 'number' ? valor.toFixed(2) : valor}</td>`;
-                                });
-                                infoHTML += `</tr>`;
-                            });
-                            
-                            infoHTML += `</tbody></table></div></div>`;
-                        }
-                    }
-
-                    document.getElementById('datasetInfo').innerHTML = infoHTML;
-                } else {
-                    alert('Error en visualización: ' + data.error);
-                }
-            } catch (error) {
-                hideLoading('visualizacionLoading');
                 alert('Error: ' + error);
             }
         }
@@ -384,9 +225,9 @@
                         </tr>
                     `).join('');
 
-                    const cacheInfo = data.modelo_cargado ? 
-                        '<div class="alert alert-success mt-3"><i class="fas fa-bolt me-2"></i><strong>Modelo cargado desde archivo</strong> - Análisis instantáneo</div>' :
-                        
+                    const cacheInfo = data.dataset_cargado ? 
+                        '<div class="alert alert-success mt-3"><i class="fas fa-bolt me-2"></i><strong>Dataset cargado desde archivo</strong> - Análisis instantáneo</div>' :
+                        '<div class="alert alert-warning mt-3"><i class="fas fa-cog me-2"></i><strong>Dataset procesado nuevo</strong> - Esto tarda más la primera vez</div>';
 
                     document.getElementById('importanciaInfo').innerHTML = `
                         <div class="info-box">
@@ -406,7 +247,7 @@
                                 </table>
                             </div>
                             <div class="mt-3">
-                                <h5><i class="fas fa-check-circle me-2 text-success"></i>Características seleccionadas para el modelo:</h5>
+                                <h5><i class="fas fa-check-circle me-2 text-success"></i>Características seleccionadas para el análisis:</h5>
                                 <div class="alert alert-light">
                                     <code>${data.columnas_top_10.join(', ')}</code>
                                 </div>
@@ -443,7 +284,7 @@
                             
                             <div class="alert alert-info">
                                 <i class="fas fa-bolt me-2"></i>
-                                <strong>Análisis instantáneo</strong> - Usando características pre-calculadas del modelo
+                                <strong>Análisis instantáneo</strong> - Usando características pre-calculadas del dataset
                             </div>
                             
                             <div class="row">
@@ -547,11 +388,10 @@
             document.getElementById(elementId).style.display = 'none';
         }
 
-        // Cargar modelos automáticamente al iniciar
+        // Cargar dataset automáticamente al iniciar
         document.addEventListener('DOMContentLoaded', function() {
             cargarDataset();
         });
     </script>
 </body>
 </html>
-
